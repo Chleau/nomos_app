@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'shared/widgets/auth_guard.dart';
+import 'features/auth/presentation/widgets/auth_guard.dart';
 import 'features/home/presentation/pages/home_page.dart';
 
 class MyApp extends StatelessWidget {

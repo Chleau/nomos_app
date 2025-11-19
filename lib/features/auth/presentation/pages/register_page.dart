@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_providers.dart';
 import '../notifier/auth_state.dart';
+import '../../domain/entities/commune.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
@@ -16,7 +17,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   final _passwordController = TextEditingController();
   final _nomController = TextEditingController();
   final _prenomController = TextEditingController();
-  final _communeIdController = TextEditingController();
+  Commune? _selectedCommune;
 
   @override
   Widget build(BuildContext context) {
@@ -129,23 +130,92 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _communeIdController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'ID de la commune',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.location_city),
-                  helperText: 'Entrez l\'identifiant de votre commune',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer l\'ID de votre commune';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Veuillez entrer un nombre valide';
-                  }
-                  return null;
+              // Champ de recherche de commune avec autocomplete
+              Consumer(
+                builder: (context, ref, child) {
+                  final communesAsync = ref.watch(communesProvider);
+
+                  return communesAsync.when(
+                    data: (communes) => Autocomplete<Commune>(
+                      displayStringForOption: (commune) => commune.toString(),
+                      optionsBuilder: (TextEditingValue textEditingValue) {
+                        if (textEditingValue.text.isEmpty) {
+                          return const Iterable<Commune>.empty();
+                        }
+                        return communes.where((commune) {
+                          final searchLower = textEditingValue.text.toLowerCase();
+                          return commune.nom.toLowerCase().contains(searchLower) ||
+                                 commune.codePostal.contains(textEditingValue.text);
+                        });
+                      },
+                      onSelected: (Commune commune) {
+                        setState(() {
+                          _selectedCommune = commune;
+                        });
+                      },
+                      fieldViewBuilder: (
+                        BuildContext context,
+                        TextEditingController fieldTextEditingController,
+                        FocusNode fieldFocusNode,
+                        VoidCallback onFieldSubmitted,
+                      ) {
+                        return TextFormField(
+                          controller: fieldTextEditingController,
+                          focusNode: fieldFocusNode,
+                          decoration: InputDecoration(
+                            labelText: 'Commune',
+                            border: const OutlineInputBorder(),
+                            prefixIcon: const Icon(Icons.location_city),
+                            helperText: 'Recherchez votre commune par nom ou code postal',
+                            suffixIcon: _selectedCommune != null
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      fieldTextEditingController.clear();
+                                      setState(() {
+                                        _selectedCommune = null;
+                                      });
+                                    },
+                                  )
+                                : null,
+                          ),
+                          validator: (value) {
+                            if (_selectedCommune == null) {
+                              return 'Veuillez sélectionner une commune';
+                            }
+                            return null;
+                          },
+                        );
+                      },
+                    ),
+                    loading: () => TextFormField(
+                      enabled: false,
+                      decoration: const InputDecoration(
+                        labelText: 'Commune',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.location_city),
+                        helperText: 'Chargement des communes...',
+                        suffixIcon: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                    error: (error, stack) => TextFormField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                        labelText: 'Commune',
+                        border: const OutlineInputBorder(),
+                        prefixIcon: const Icon(Icons.error, color: Colors.red),
+                        helperText: 'Erreur de chargement des communes',
+                        errorText: error.toString(),
+                      ),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 24),
@@ -178,11 +248,21 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
   void _performRegister() {
     if (_formKey.currentState!.validate()) {
+      if (_selectedCommune == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Veuillez sélectionner une commune'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
       final email = _emailController.text.trim();
       final password = _passwordController.text;
       final nom = _nomController.text.trim();
       final prenom = _prenomController.text.trim();
-      final communeId = int.parse(_communeIdController.text);
+      final communeId = _selectedCommune!.id;
 
       ref.read(authNotifierProvider.notifier).register(
             email: email,
@@ -200,7 +280,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     _passwordController.dispose();
     _nomController.dispose();
     _prenomController.dispose();
-    _communeIdController.dispose();
     super.dispose();
   }
 }

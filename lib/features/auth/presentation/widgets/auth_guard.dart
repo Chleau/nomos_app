@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../features/auth/presentation/providers/auth_providers.dart';
-import '../../features/auth/presentation/pages/login_page.dart';
+import '../providers/auth_providers.dart';
+import '../pages/login_page.dart';
 
 /// Widget de garde qui vérifie l'état d'authentification au démarrage
 class AuthGuard extends ConsumerStatefulWidget {
@@ -45,3 +45,4 @@ class _AuthGuardState extends ConsumerState<AuthGuard> {
     return const LoginPage();
   }
 }
+

@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/user_model.dart';
+import '../models/commune_model.dart';
 
 /// Remote data source for authentication
 abstract class AuthRemoteDataSource {
@@ -15,6 +16,8 @@ abstract class AuthRemoteDataSource {
   Future<void> logout();
   Future<UserModel?> getCurrentUser();
   Future<bool> isLoggedIn();
+  Future<List<CommuneModel>> getCommunes();
+  Future<CommuneModel?> getCommuneByName(String nom);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -116,6 +119,38 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<bool> isLoggedIn() async {
     return supabaseClient.auth.currentUser != null;
+  }
+
+  @override
+  Future<List<CommuneModel>> getCommunes() async {
+    try {
+      final response = await supabaseClient
+          .from('communes')
+          .select()
+          .order('nom');
+
+      return (response as List)
+          .map((json) => CommuneModel.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception('Erreur lors de la récupération des communes: $e');
+    }
+  }
+
+  @override
+  Future<CommuneModel?> getCommuneByName(String nom) async {
+    try {
+      final response = await supabaseClient
+          .from('communes')
+          .select()
+          .ilike('nom', nom)
+          .maybeSingle();
+
+      if (response == null) return null;
+      return CommuneModel.fromJson(response);
+    } catch (e) {
+      return null;
+    }
   }
 }
 
