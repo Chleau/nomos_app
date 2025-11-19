@@ -20,4 +20,14 @@ class LawModel extends Law {
           : null,
     );
   }
+
+  Law toEntity() {
+    return Law(
+      id: id,
+      titre: titre,
+      contenu: contenu,
+      thematique: thematique,
+      dateMiseAJour: dateMiseAJour,
+    );
+  }
 }
