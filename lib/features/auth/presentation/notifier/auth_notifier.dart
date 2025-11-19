@@ -1,0 +1,36 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../domain/repositories/auth_repository.dart';
+import '../../data/repositories_impl/auth_repository_impl.dart';
+import 'auth_state.dart';
+
+class AuthNotifier extends StateNotifier<AuthState> {
+  final AuthRepository repository;
+
+  AuthNotifier({required this.repository}) : super(const AuthState());
+
+  Future<void> login(String email, String password) async {
+    state = state.copyWith(isLoading: true, error: null);
+    
+    try {
+      final user = await repository.login(email, password);
+      state = state.copyWith(
+        isLoading: false,
+        isAuthenticated: true,
+        userEmail: user.email,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Login failed: $e',
+      );
+    }
+  }
+
+  void logout() {
+    state = const AuthState();
+  }
+}
+
+final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
+  return AuthNotifier(repository: AuthRepositoryImpl());
+});
