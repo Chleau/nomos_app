@@ -5,7 +5,7 @@ import '../providers/home_providers.dart';
 import '../widgets/numbers_report_widget.dart';
 import '../widgets/actor_level_widget.dart';
 import 'interactive_map_page.dart';
-import 'laws_page.dart';
+import '../../../laws/presentation/pages/laws_page.dart';
 
 /// Page d'accueil après authentification
 class HomePage extends ConsumerStatefulWidget {
