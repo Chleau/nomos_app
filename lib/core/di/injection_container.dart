@@ -12,6 +12,8 @@ import '../../features/home/data/repositories/home_repository_impl.dart';
 import '../../features/home/domain/repositories/home_repository.dart';
 import '../../features/home/domain/usecases/get_dashboard_stats_usecase.dart';
 import '../../features/home/domain/usecases/get_notifications_usecase.dart';
+import '../../features/home/domain/usecases/count_user_signalements_usecase.dart';
+import '../../features/home/domain/usecases/count_commune_signalements_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -40,13 +42,15 @@ class InjectionContainer {
     );
 
     // Use cases - Auth
-    sl.registerLazySingleton(() => LoginUseCase(sl()));
-    sl.registerLazySingleton(() => RegisterUseCase(sl()));
-    sl.registerLazySingleton(() => LogoutUseCase(sl()));
-    sl.registerLazySingleton(() => GetCurrentUserUseCase(sl()));
+    sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl()));
+    sl.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(sl()));
+    sl.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(sl()));
+    sl.registerLazySingleton<GetCurrentUserUseCase>(() => GetCurrentUserUseCase(sl()));
 
     // Use cases - Home
-    sl.registerLazySingleton(() => GetDashboardStatsUseCase(sl()));
-    sl.registerLazySingleton(() => GetNotificationsUseCase(sl()));
+    sl.registerLazySingleton<GetDashboardStatsUseCase>(() => GetDashboardStatsUseCase(sl()));
+    sl.registerLazySingleton<GetNotificationsUseCase>(() => GetNotificationsUseCase(sl()));
+    sl.registerLazySingleton<CountUserSignalementsUseCase>(() => CountUserSignalementsUseCase(sl()));
+    sl.registerLazySingleton<CountCommuneSignalementsUseCase>(() => CountCommuneSignalementsUseCase(sl()));
   }
 }

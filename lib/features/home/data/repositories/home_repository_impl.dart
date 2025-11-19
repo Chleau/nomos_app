@@ -25,5 +25,23 @@ class HomeRepositoryImpl implements HomeRepository {
       throw Exception('Erreur repository: $e');
     }
   }
+
+  @override
+  Future<int> countSignalementsByHabitantId(int habitantId) async {
+    try {
+      return await remoteDataSource.countSignalementsByHabitantId(habitantId);
+    } catch (e) {
+      throw Exception('Erreur repository: $e');
+    }
+  }
+
+  @override
+  Future<int> countSignalementsByCommuneId(int communeId) async {
+    try {
+      return await remoteDataSource.countSignalementsByCommuneId(communeId);
+    } catch (e) {
+      throw Exception('Erreur repository: $e');
+    }
+  }
 }
 

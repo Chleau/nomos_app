@@ -7,6 +7,7 @@ class DashboardStatsModel extends DashboardStats {
     required super.totalCommunes,
     required super.activeUsers,
     required super.pendingRequests,
+    required super.totalCommuneReports,
   });
 
   factory DashboardStatsModel.fromJson(Map<String, dynamic> json) {
@@ -15,6 +16,7 @@ class DashboardStatsModel extends DashboardStats {
       totalCommunes: json['total_communes'] ?? 0,
       activeUsers: json['active_users'] ?? 0,
       pendingRequests: json['pending_requests'] ?? 0,
+      totalCommuneReports: json['total_commune_reports'] ?? 0,
     );
   }
 
@@ -24,6 +26,7 @@ class DashboardStatsModel extends DashboardStats {
       'total_communes': totalCommunes,
       'active_users': activeUsers,
       'pending_requests': pendingRequests,
+      'total_commune_reports': totalCommuneReports,
     };
   }
 }
