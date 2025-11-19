@@ -15,6 +15,15 @@ import '../../features/home/domain/usecases/get_notifications_usecase.dart';
 import '../../features/home/domain/usecases/count_user_signalements_usecase.dart';
 import '../../features/home/domain/usecases/count_commune_signalements_usecase.dart';
 
+// Incidents feature imports
+import '../../features/incidents/data/datasources/signalement_remote_datasource.dart';
+import '../../features/incidents/data/repositories/signalement_repository_impl.dart';
+import '../../features/incidents/domain/repositories/signalement_repository.dart';
+import '../../features/incidents/domain/usecases/get_all_signalements_usecase.dart';
+import '../../features/incidents/domain/usecases/get_signalements_by_commune_usecase.dart';
+import '../../features/incidents/domain/usecases/create_signalement_usecase.dart';
+import '../../features/incidents/domain/usecases/upload_photo_usecase.dart';
+
 final sl = GetIt.instance;
 
 /// Dependency injection setup
@@ -32,6 +41,9 @@ class InjectionContainer {
     sl.registerLazySingleton<HomeRemoteDataSource>(
       () => HomeRemoteDataSourceImpl(supabaseClient: sl()) as HomeRemoteDataSource,
     );
+    sl.registerLazySingleton<SignalementRemoteDataSource>(
+      () => SignalementRemoteDataSourceImpl(supabaseClient: sl()),
+    );
 
     // Repositories
     sl.registerLazySingleton<AuthRepository>(
@@ -39,6 +51,9 @@ class InjectionContainer {
     );
     sl.registerLazySingleton<HomeRepository>(
       () => HomeRepositoryImpl(remoteDataSource: sl()),
+    );
+    sl.registerLazySingleton<SignalementRepository>(
+      () => SignalementRepositoryImpl(remoteDataSource: sl()),
     );
 
     // Use cases - Auth
@@ -52,5 +67,11 @@ class InjectionContainer {
     sl.registerLazySingleton<GetNotificationsUseCase>(() => GetNotificationsUseCase(sl()));
     sl.registerLazySingleton<CountUserSignalementsUseCase>(() => CountUserSignalementsUseCase(sl()));
     sl.registerLazySingleton<CountCommuneSignalementsUseCase>(() => CountCommuneSignalementsUseCase(sl()));
+
+    // Use cases - Incidents
+    sl.registerLazySingleton<GetAllSignalementsUseCase>(() => GetAllSignalementsUseCase(sl()));
+    sl.registerLazySingleton<GetSignalementsByCommuneUseCase>(() => GetSignalementsByCommuneUseCase(sl()));
+    sl.registerLazySingleton<CreateSignalementUseCase>(() => CreateSignalementUseCase(sl()));
+    sl.registerLazySingleton<UploadPhotoUseCase>(() => UploadPhotoUseCase(sl<SignalementRemoteDataSource>()));
   }
 }

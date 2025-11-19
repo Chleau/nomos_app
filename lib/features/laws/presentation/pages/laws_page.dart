@@ -10,6 +10,9 @@ class LawsPage extends ConsumerWidget {
     final lawsAsync = ref.watch(filteredLawsProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dernières lois'),
+      ),
       backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Column(

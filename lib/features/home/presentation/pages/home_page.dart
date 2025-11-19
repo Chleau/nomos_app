@@ -6,6 +6,7 @@ import '../widgets/numbers_report_widget.dart';
 import '../widgets/actor_level_widget.dart';
 import 'interactive_map_page.dart';
 import '../../../laws/presentation/pages/laws_page.dart';
+import '../../../incidents/presentation/pages/signalements_list_page.dart';
 
 /// Page d'accueil après authentification
 class HomePage extends ConsumerStatefulWidget {
@@ -173,6 +174,32 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Bouton Mes signalements
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignalementsListPage(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.list_alt),
+                        label: const Text('Mes signalements'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
