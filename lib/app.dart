@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'features/auth/presentation/pages/login_page.dart';
+import 'shared/widgets/auth_guard.dart';
+import 'features/home/presentation/pages/home_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,12 +10,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       child: MaterialApp(
-        title: 'nomos_app',
+        title: 'Nomos',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
-        home: const LoginPage(),
+        home: const AuthGuard(
+          child: HomePage(),
+        ),
         debugShowCheckedModeBanner: false,
       ),
     );

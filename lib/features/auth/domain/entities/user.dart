@@ -1,16 +1,26 @@
-/// User entity
+/// User entity (Habitant)
 class User {
-  final String id;
+  final int id;
+  final String authUserId;
   final String email;
-  final String name;
-  final String? profileImage;
+  final String nom;
+  final String prenom;
+  final int communeId;
+  final String role;
+  final DateTime createdAt;
 
   User({
     required this.id,
+    required this.authUserId,
     required this.email,
-    required this.name,
-    this.profileImage,
+    required this.nom,
+    required this.prenom,
+    required this.communeId,
+    required this.role,
+    required this.createdAt,
   });
+
+  String get fullName => '$prenom $nom';
 
   @override
   bool operator ==(Object other) {

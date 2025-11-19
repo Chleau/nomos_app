@@ -1,48 +1,71 @@
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/entities/user.dart';
-import '../models/user_model.dart';
+import '../datasources/auth_remote_datasource.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
+  final AuthRemoteDataSource remoteDataSource;
+
+  AuthRepositoryImpl({required this.remoteDataSource});
+
   @override
   Future<User> login(String email, String password) async {
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
-    return UserModel(
-      id: '1',
-      email: email,
-      name: 'Test User',
-    );
+    try {
+      final userModel = await remoteDataSource.login(email, password);
+      return userModel.toEntity();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<User> register(String email, String password, String name) async {
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
-    return UserModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      email: email,
-      name: name,
-    );
+  Future<User> register({
+    required String email,
+    required String password,
+    required String nom,
+    required String prenom,
+    required int communeId,
+    String role = 'habitant',
+  }) async {
+    try {
+      final userModel = await remoteDataSource.register(
+        email: email,
+        password: password,
+        nom: nom,
+        prenom: prenom,
+        communeId: communeId,
+        role: role,
+      );
+      return userModel.toEntity();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> logout() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      await remoteDataSource.logout();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<User> getCurrentUser() async {
-    // Implement getting current user
-    return UserModel(
-      id: '1',
-      email: 'test@example.com',
-      name: 'Test User',
-    );
+  Future<User?> getCurrentUser() async {
+    try {
+      final userModel = await remoteDataSource.getCurrentUser();
+      return userModel?.toEntity();
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
   Future<bool> isLoggedIn() async {
-    // Implement login check
-    return false;
+    try {
+      return await remoteDataSource.isLoggedIn();
+    } catch (e) {
+      return false;
+    }
   }
 }

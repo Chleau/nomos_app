@@ -1,28 +1,30 @@
+import '../../domain/entities/user.dart';
+
 /// Auth state for Riverpod
 class AuthState {
   final bool isLoading;
   final String? error;
   final bool isAuthenticated;
-  final String? userEmail;
+  final User? user;
 
   const AuthState({
     this.isLoading = false,
     this.error,
     this.isAuthenticated = false,
-    this.userEmail,
+    this.user,
   });
 
   AuthState copyWith({
     bool? isLoading,
     String? error,
     bool? isAuthenticated,
-    String? userEmail,
+    User? user,
   }) {
     return AuthState(
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      error: error,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
-      userEmail: userEmail ?? this.userEmail,
+      user: user ?? this.user,
     );
   }
 }
