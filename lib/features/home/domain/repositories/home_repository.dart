@@ -7,5 +7,11 @@ abstract class HomeRepository {
 
   /// Récupère les notifications récentes
   Future<List<String>> getRecentNotifications();
+
+  /// Compte le nombre de signalements d'un habitant
+  Future<int> countSignalementsByHabitantId(int habitantId);
+
+  /// Compte le nombre total de signalements d'une commune
+  Future<int> countSignalementsByCommuneId(int communeId);
 }
 

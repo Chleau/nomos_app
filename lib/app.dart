@@ -14,7 +14,24 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Nomos',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primaryColor: const Color(0xFFF25F0D),
+          scaffoldBackgroundColor: const Color(0xFFE6ECEF),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFFF25F0D),
+            primary: const Color(0xFFF25F0D),
+            background: const Color(0xFFE6ECEF),
+          ),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFFF25F0D),
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFF25F0D),
+              foregroundColor: Colors.white,
+            ),
+          ),
           useMaterial3: true,
         ),
         home: const AuthGuard(

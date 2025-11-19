@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../providers/home_providers.dart';
+import '../widgets/numbers_report_widget.dart';
+import '../widgets/actor_level_widget.dart';
+import 'interactive_map_page.dart';
+import 'laws_page.dart';
 
 /// Page d'accueil après authentification
 class HomePage extends ConsumerStatefulWidget {
@@ -17,7 +21,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     // Charger les données au démarrage
     Future.microtask(() {
-      ref.read(homeNotifierProvider.notifier).loadHomeData();
+      final user = ref.read(authNotifierProvider).user;
+      ref.read(homeNotifierProvider.notifier).loadHomeData(
+            habitantId: user?.id,
+            communeId: user?.communeId,
+          );
     });
   }
 
@@ -39,7 +47,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                 context: context,
                 builder: (context) => AlertDialog(
                   title: const Text('Déconnexion'),
-                  content: const Text('Voulez-vous vraiment vous déconnecter ?'),
+                  content:
+                      const Text('Voulez-vous vraiment vous déconnecter ?'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
@@ -63,20 +72,115 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: user == null
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: () => ref.read(homeNotifierProvider.notifier).refresh(),
+              onRefresh: () => ref.read(homeNotifierProvider.notifier).refresh(
+                    habitantId: user.id,
+                    communeId: user.communeId,
+                  ),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // ...existing code...
+                    const SizedBox(height: 16),
 
-                ],
+                    // Widget de niveau d'acteur
+                    ActorLevelWidget(
+                      userSignalements: homeState.userSignalementsCount,
+                      communeSignalements: homeState.communeSignalementsCount,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Widgets de statistiques de signalements
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(minHeight: 120),
+                            child: NumbersReportWidget(
+                              value: homeState.userSignalementsCount,
+                              label: 'Votre nombre de déclarations',
+                              backgroundColor: Colors.grey.shade50,
+                              textColor: Colors.grey.shade700,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(minHeight: 120),
+                            child: NumbersReportWidget(
+                              value: homeState.communeSignalementsCount,
+                              label: 'Déclarations de la commune',
+                              backgroundColor: Colors.grey.shade50,
+                              textColor: Colors.grey.shade700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Boutons de navigation
+                    Row(
+                      children: [
+                        // Bouton Carte interactive
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const InteractiveMapPage(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.map),
+                            label: const Text('Carte interactive'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: const Color(0xFFF25F0D),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        // Bouton Lois en vigueur
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LawsPage(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.gavel),
+                            label: const Text('Lois en vigueur'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: const Color(0xFFF25F0D),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
     );
   }
+
 
   Widget _buildStatCard(
     BuildContext context, {
@@ -159,23 +263,4 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
     );
   }
-
-  String _formatDate(DateTime date) {
-    final months = [
-      'janvier',
-      'février',
-      'mars',
-      'avril',
-      'mai',
-      'juin',
-      'juillet',
-      'août',
-      'septembre',
-      'octobre',
-      'novembre',
-      'décembre'
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
-  }
 }
-
