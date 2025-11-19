@@ -4,6 +4,8 @@ import 'features/auth/presentation/widgets/auth_guard.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'package:nomos_app/shared/widgets/navbar.dart';
 import 'package:nomos_app/features/laws/presentation/pages/laws_page.dart';
+import 'package:nomos_app/features/incidents/presentation/pages/carte_incidents_page.dart';
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -55,7 +57,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const Center(child: Text('Carte incidents', style: TextStyle(fontSize: 24))),
+    const CarteIncidentsPage(),
     const LawsPage(),
     const Center(child: Text('Menu', style: TextStyle(fontSize: 24))),
   ];
