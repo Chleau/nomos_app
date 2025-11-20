@@ -51,5 +51,8 @@
 	<string>Nous avons besoin d'accéder à vos photos pour les signalements</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Nécessaire pour l'enregistrement vidéo</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Nous avons besoin de votre position pour centrer la carte.</string>
+
 </dict>
 </plist>

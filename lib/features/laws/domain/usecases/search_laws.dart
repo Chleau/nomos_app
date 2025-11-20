@@ -1,5 +1,6 @@
-import 'package:nomos_app/features/laws/domain/entities/law.dart';
-import 'package:nomos_app/features/laws/domain/repositories/law_repository.dart';
+// lib/features/laws/domain/usecases/search_laws.dart
+import '../entities/law.dart';
+import '../repositories/law_repository.dart';
 
 class SearchLaws {
   final LawRepository repository;
@@ -7,12 +8,17 @@ class SearchLaws {
   SearchLaws(this.repository);
 
   Future<List<Law>> call(String query) async {
-    final all = await repository.getLaws();
-    final q = query.toLowerCase();
-    return all.where((law) {
-      final titre = law.titre.toLowerCase();
-      final contenu = law.contenu.toLowerCase();
-      return titre.contains(q) || contenu.contains(q);
+    final laws = await repository.getAllLaws();
+
+    if (query.isEmpty) {
+      return laws;
+    }
+
+    return laws.where((law) {
+      final searchLower = query.toLowerCase();
+      return law.titre.toLowerCase().contains(searchLower) ||
+          law.contenu.toLowerCase().contains(searchLower) ||
+          law.thematique.toLowerCase().contains(searchLower);
     }).toList();
   }
 }
