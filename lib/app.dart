@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/presentation/splash_screen.dart';
+import 'core/presentation/pages/onboarding_screen.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/laws/presentation/pages/laws_page.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const SplashScreen(),
+          '/onboarding': (context) => const OnboardingScreen(),
           '/login': (context) => const LoginPage(),
           '/main': (context) => const MainPage(),
         },

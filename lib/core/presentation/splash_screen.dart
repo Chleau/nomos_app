@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import '../../features/auth/presentation/providers/auth_providers.dart';
+import '../services/onboarding_service.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -54,21 +55,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     if (!mounted) return;
 
-    // Vérifier l'état d'authentification
-    await ref.read(authNotifierProvider.notifier).checkAuthStatus();
+    // 🔥 MODIFICATION : Afficher l'onboarding à chaque lancement
+    // Pour désactiver et afficher l'onboarding une seule fois, décommentez les lignes ci-dessous
+    // et commentez la ligne "Navigator.of(context).pushReplacementNamed('/onboarding');"
 
-    if (!mounted) return;
+    // final hasSeenOnboarding = await OnboardingService.hasSeenOnboarding();
+    // if (!mounted) return;
+    // if (!hasSeenOnboarding) {
+    //   Navigator.of(context).pushReplacementNamed('/onboarding');
+    //   return;
+    // }
 
-    final authState = ref.read(authNotifierProvider);
-
-    // Navigation en fonction de l'état d'authentification
-    if (authState.isAuthenticated && authState.user != null) {
-      // Utilisateur connecté → aller directement à la page principale
-      Navigator.of(context).pushReplacementNamed('/main');
-    } else {
-      // Utilisateur non connecté → aller à la page de login
-      Navigator.of(context).pushReplacementNamed('/login');
-    }
+    // Toujours afficher l'onboarding
+    Navigator.of(context).pushReplacementNamed('/onboarding');
   }
 
   @override

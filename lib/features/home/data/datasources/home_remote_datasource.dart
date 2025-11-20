@@ -17,7 +17,6 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   @override
   Future<DashboardStatsModel> getDashboardStats() async {
     // Pour l'instant, on retourne des données statiques
-    // TODO: Implémenter la récupération réelle depuis Supabase quand nécessaire
     await Future.delayed(const Duration(milliseconds: 500));
 
     return const DashboardStatsModel(
@@ -32,7 +31,6 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   @override
   Future<List<String>> getRecentNotifications() async {
     // Pour l'instant, on retourne des notifications statiques
-    // TODO: Implémenter la récupération réelle depuis Supabase quand nécessaire
     await Future.delayed(const Duration(milliseconds: 300));
 
     return [
