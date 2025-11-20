@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_providers.dart';
 import '../notifier/auth_state.dart';
+import '../widgets/auth_header.dart';
+import '../widgets/email_field.dart';
+import '../widgets/password_field.dart';
+import '../widgets/auth_button.dart';
 import 'register_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -34,9 +38,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         );
       } else if (next.isAuthenticated && next.user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bienvenue ${next.user!.fullName}!'), backgroundColor: Colors.green),
+          SnackBar(
+              content: Text('Bienvenue ${next.user!.fullName}!'),
+              backgroundColor: Colors.green),
         );
-        // TODO: naviguer vers la page d'accueil si nécessaire
+        // Navigation vers la page principale après connexion réussie
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            Navigator.of(context).pushReplacementNamed('/main');
+          }
+        });
       }
     });
 
@@ -50,64 +61,29 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-              const Text(
-              'Bienvenue sur Nomos',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 32),
-            TextFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Veuillez entrer votre email';
-                if (!value.contains('@')) return 'Veuillez entrer un email valide';
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Mot de passe',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Veuillez entrer votre mot de passe';
-                if (value.length < 6) return 'Le mot de passe doit contenir au moins 6 caractères';
-                return null;
-              },
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: authState.isLoading ? null : _performLogin,
-                child: authState.isLoading
-                    ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-                    : const Text('Se connecter'),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const RegisterPage()),
-                );
-              },
-              child: const Text("Pas encore de compte ? S'inscrire"),
-            ),
+                const AuthHeader(title: 'Bienvenue sur Nomos'),
+                const SizedBox(height: 32),
+                EmailField(controller: _emailController),
+                const SizedBox(height: 16),
+                PasswordField(controller: _passwordController),
+                const SizedBox(height: 24),
+                AuthButton(
+                  onPressed: _performLogin,
+                  text: 'Se connecter',
+                  isLoading: authState.isLoading,
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const RegisterPage()),
+                    );
+                  },
+                  child: const Text(
+                    "Pas encore de compte ? S'inscrire",
+                    style: TextStyle(color: Color(0xFF053F5C)),
+                  ),
+                ),
               ],
             ),
           ),

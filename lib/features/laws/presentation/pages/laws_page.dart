@@ -39,8 +39,8 @@ class LawsPage extends ConsumerWidget {
             ),
 
             // Titre
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -48,7 +48,7 @@ class LawsPage extends ConsumerWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
+                    color: Color(0xFF053F5C),
                   ),
                 ),
               ),
@@ -94,7 +94,7 @@ class LawsPage extends ConsumerWidget {
                                 law.titre,
                                 style: const TextStyle(
                                   fontSize: 14,
-                                  color: Colors.black87,
+                                  color: Color(0xFF053F5C),
                                   height: 1.4,
                                 ),
                               ),
@@ -112,14 +112,14 @@ class LawsPage extends ConsumerWidget {
                                       vertical: 6,
                                     ),
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.black87),
+                                      border: Border.all(color: Color(0xFF053F5C)),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
                                       law.thematique,
                                       style: const TextStyle(
                                         fontSize: 12,
-                                        color: Colors.black87,
+                                        color: Color(0xFF053F5C),
                                       ),
                                     ),
                                   ),
@@ -147,7 +147,7 @@ class LawsPage extends ConsumerWidget {
                                       'lire plus',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.black54,
+                                        color: Color(0xFF053F5C),
                                       ),
                                     ),
                                   ),

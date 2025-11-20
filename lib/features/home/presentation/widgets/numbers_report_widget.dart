@@ -33,18 +33,18 @@ class NumbersReportWidget extends StatelessWidget {
           children: [
             Text(
               '$value',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: textColor ?? Colors.grey.shade700,
+                color: Color(0xFF053F5C),
               ),
             ),
             const SizedBox(height: 8),
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
-                color: textColor ?? Colors.blue.shade700,
+                color: Color(0xFF053F5C),
               ),
               textAlign: TextAlign.center,
             ),
