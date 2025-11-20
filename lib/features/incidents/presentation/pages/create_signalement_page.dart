@@ -68,7 +68,6 @@ class _CreateSignalementPageState extends ConsumerState<CreateSignalementPage> {
   }
 
   Future<void> _getCurrentLocation() async {
-    // TODO: Implémenter avec geolocator
     setState(() {
       _latitude = 48.8566;
       _longitude = 2.3522;

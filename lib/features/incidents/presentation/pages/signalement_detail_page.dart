@@ -20,17 +20,6 @@ class SignalementDetailPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Détails du signalement'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share),
-            onPressed: () {
-              // TODO: Implémenter le partage
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Partage à implémenter')),
-              );
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -152,7 +141,6 @@ class SignalementDetailPage extends ConsumerWidget {
                             width: double.infinity,
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                // TODO: Ouvrir dans Google Maps
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Ouverture Google Maps à implémenter')),
                                 );
@@ -264,7 +252,6 @@ class SignalementDetailPage extends ConsumerWidget {
 
         return GestureDetector(
           onTap: () {
-            // TODO: Ouvrir en plein écran
           },
           child: Container(
             width: double.infinity,
