@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:convert';
 import '../models/signalement_model.dart';
 import '../models/type_signalement_model.dart';
-import '../models/photo_signalement_model.dart';
 
 /// Source de données distante pour les signalements
 abstract class SignalementRemoteDataSource {
@@ -16,7 +15,6 @@ abstract class SignalementRemoteDataSource {
   Future<void> deleteSignalement(int id);
   Future<List<TypeSignalementModel>> getTypesSignalement();
   Future<String> uploadPhoto(File photo, String fileName);
-  Future<PhotoSignalementModel> createPhotoSignalement(int signalementId, String url);
 }
 
 class SignalementRemoteDataSourceImpl implements SignalementRemoteDataSource {
@@ -172,42 +170,6 @@ class SignalementRemoteDataSourceImpl implements SignalementRemoteDataSource {
       print('   - Message: $e');
       print('   - StackTrace: $stackTrace');
       throw Exception('Erreur lors de la conversion de la photo: $e');
-    }
-  }
-
-  @override
-  Future<PhotoSignalementModel> createPhotoSignalement(
-    int signalementId,
-    String url,
-  ) async {
-    try {
-      print('💾 createPhotoSignalement');
-      print('   - signalement_id: $signalementId');
-      print('   - url: $url');
-
-      final data = {
-        'signalement_id': signalementId,
-        'url': url,
-      };
-      print('   - Data to insert: $data');
-
-      final response = await supabaseClient
-          .from('photos_signalement')
-          .insert(data)
-          .select()
-          .single();
-
-      print('   - Response: $response');
-      final result = PhotoSignalementModel.fromJson(response);
-      print('   - Photo enregistrée avec ID: ${result.id}');
-
-      return result;
-    } catch (e, stackTrace) {
-      print('💥 ERREUR createPhotoSignalement:');
-      print('   - Type: ${e.runtimeType}');
-      print('   - Message: $e');
-      print('   - StackTrace: $stackTrace');
-      throw Exception('Erreur lors de la création de la photo: $e');
     }
   }
 }

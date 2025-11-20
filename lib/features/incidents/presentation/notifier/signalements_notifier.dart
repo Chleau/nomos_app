@@ -115,14 +115,14 @@ class SignalementsNotifier extends StateNotifier<SignalementsState> {
       // Si une photo est fournie, tenter de l'uploader (non bloquant)
       print('🔍 Vérification photo: photo = ${photo != null ? "présente (${photo.path})" : "null"}');
       if (photo != null) {
-        print('📸 Début upload photo pour signalement ID: ${signalement.id}');
+        print('Début upload photo pour signalement ID: ${signalement.id}');
         try {
           final photoUrl = await uploadPhotoUseCase(photo, signalement.id);
-          print('✅ Photo uploadée avec succès! URL stockée dans signalement.url');
+          print('Photo uploadée avec succès! URL stockée dans signalement.url');
           print('   - URL (${photoUrl.length} caractères)');
         } catch (photoError) {
           // Log l'erreur mais ne bloque pas la création du signalement
-          print('❌ Erreur lors de l\'upload de la photo (non-bloquant): $photoError');
+          print('Erreur lors de l\'upload de la photo (non-bloquant): $photoError');
           // Note: La photo n'a pas été uploadée mais le signalement est créé
         }
       } else {
