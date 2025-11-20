@@ -4,7 +4,7 @@ import '../../domain/usecases/get_all_signalements_usecase.dart';
 import '../../domain/usecases/get_signalements_by_commune_usecase.dart';
 import '../../domain/usecases/create_signalement_usecase.dart';
 import '../../domain/usecases/upload_photo_usecase.dart';
-import '../../data/datasources/signalement_remote_datasource.dart';
+import '../../domain/usecases/get_types_signalement_usecase.dart';
 import 'signalements_state.dart';
 
 /// Notifier pour gérer l'état des signalements
@@ -12,21 +12,21 @@ class SignalementsNotifier extends StateNotifier<SignalementsState> {
   final GetAllSignalementsUseCase getAllSignalementsUseCase;
   final GetSignalementsByCommuneUseCase getSignalementsByCommuneUseCase;
   final CreateSignalementUseCase createSignalementUseCase;
-  final SignalementRemoteDataSource remoteDataSource;
   final UploadPhotoUseCase uploadPhotoUseCase;
+  final GetTypesSignalementUseCase getTypesSignalementUseCase;
 
   SignalementsNotifier({
     required this.getAllSignalementsUseCase,
     required this.getSignalementsByCommuneUseCase,
     required this.createSignalementUseCase,
-    required this.remoteDataSource,
     required this.uploadPhotoUseCase,
+    required this.getTypesSignalementUseCase,
   }) : super(const SignalementsState());
 
   /// Charge les types de signalement
   Future<void> loadTypesSignalement() async {
     try {
-      final types = await remoteDataSource.getTypesSignalement();
+      final types = await getTypesSignalementUseCase();
       state = state.copyWith(typesSignalement: types);
     } catch (e) {
       // On ne bloque pas si les types ne chargent pas

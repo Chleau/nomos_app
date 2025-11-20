@@ -23,6 +23,7 @@ import '../../features/incidents/domain/usecases/get_all_signalements_usecase.da
 import '../../features/incidents/domain/usecases/get_signalements_by_commune_usecase.dart';
 import '../../features/incidents/domain/usecases/create_signalement_usecase.dart';
 import '../../features/incidents/domain/usecases/upload_photo_usecase.dart';
+import '../../features/incidents/domain/usecases/get_types_signalement_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -72,6 +73,7 @@ class InjectionContainer {
     sl.registerLazySingleton<GetAllSignalementsUseCase>(() => GetAllSignalementsUseCase(sl()));
     sl.registerLazySingleton<GetSignalementsByCommuneUseCase>(() => GetSignalementsByCommuneUseCase(sl()));
     sl.registerLazySingleton<CreateSignalementUseCase>(() => CreateSignalementUseCase(sl()));
-    sl.registerLazySingleton<UploadPhotoUseCase>(() => UploadPhotoUseCase(sl<SignalementRemoteDataSource>()));
+    sl.registerLazySingleton<UploadPhotoUseCase>(() => UploadPhotoUseCase(sl<SignalementRepository>()));
+    sl.registerLazySingleton<GetTypesSignalementUseCase>(() => GetTypesSignalementUseCase(sl()));
   }
 }

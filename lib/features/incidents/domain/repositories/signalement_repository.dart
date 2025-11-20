@@ -1,9 +1,13 @@
 import 'dart:io';
 import '../entities/signalement.dart';
 import '../entities/photo_signalement.dart';
+import '../entities/type_signalement.dart';
 
 /// Repository abstrait pour la gestion des signalements
 abstract class SignalementRepository {
+  /// Récupère tous les types de signalements disponibles
+  Future<List<TypeSignalement>> getTypesSignalement();
+
   /// Récupère tous les signalements
   Future<List<Signalement>> getAllSignalements();
 
