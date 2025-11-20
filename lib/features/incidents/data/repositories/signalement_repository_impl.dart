@@ -1,6 +1,6 @@
 import 'dart:io';
 import '../../domain/entities/signalement.dart';
-import '../../domain/entities/photo_signalement.dart';
+import '../../domain/entities/type_signalement.dart';
 import '../../domain/repositories/signalement_repository.dart';
 import '../datasources/signalement_remote_datasource.dart';
 
@@ -9,6 +9,15 @@ class SignalementRepositoryImpl implements SignalementRepository {
   final SignalementRemoteDataSource remoteDataSource;
 
   SignalementRepositoryImpl({required this.remoteDataSource});
+
+  @override
+  Future<List<TypeSignalement>> getTypesSignalement() async {
+    try {
+      return await remoteDataSource.getTypesSignalement();
+    } catch (e) {
+      throw Exception('Erreur repository: $e');
+    }
+  }
 
   @override
   Future<List<Signalement>> getAllSignalements() async {
@@ -106,16 +115,13 @@ class SignalementRepositoryImpl implements SignalementRepository {
   }
 
   @override
-  Future<PhotoSignalement> uploadPhotoAndCreate(File photo, int signalementId) async {
+  Future<String> uploadPhotoBase64(File photo) async {
     try {
       // Générer un nom de fichier unique
-      final fileName = '${signalementId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      // Upload de la photo
-      final url = await remoteDataSource.uploadPhoto(photo, fileName);
-
-      // Créer l'entrée dans la table photos_signalement
-      return await remoteDataSource.createPhotoSignalement(signalementId, url);
+      // Upload de la photo et retour de l'URL base64
+      return await remoteDataSource.uploadPhoto(photo, fileName);
     } catch (e) {
       throw Exception('Erreur lors de l\'upload de la photo: $e');
     }

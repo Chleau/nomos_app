@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_providers.dart';
 import '../notifier/auth_state.dart';
+import '../widgets/auth_header.dart';
+import '../widgets/email_field.dart';
+import '../widgets/password_field.dart';
+import '../widgets/auth_button.dart';
+import '../widgets/name_field.dart';
+import '../widgets/commune_search_field.dart';
 import '../../domain/entities/commune.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
@@ -40,7 +46,12 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.of(context).pop(); // Retour à la page précédente
+        // Navigation vers la page principale après inscription réussie
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false);
+          }
+        });
       }
     });
 
@@ -56,188 +67,49 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 16),
-              const Text(
-                'Créer un compte',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
+              const AuthHeader(
+                title: 'Créer un compte',
+                subtitle: 'Rejoignez votre commune',
               ),
               const SizedBox(height: 32),
-              TextFormField(
+              NameField(
                 controller: _prenomController,
-                decoration: const InputDecoration(
-                  labelText: 'Prénom',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre prénom';
-                  }
-                  return null;
-                },
+                labelText: 'Prénom',
+                icon: Icons.person,
               ),
               const SizedBox(height: 16),
-              TextFormField(
+              NameField(
                 controller: _nomController,
-                decoration: const InputDecoration(
-                  labelText: 'Nom',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person_outline),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre nom';
-                  }
-                  return null;
-                },
+                labelText: 'Nom',
+                icon: Icons.person_outline,
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre email';
-                  }
-                  if (!value.contains('@')) {
-                    return 'Veuillez entrer un email valide';
-                  }
-                  return null;
-                },
-              ),
+              EmailField(controller: _emailController),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Mot de passe',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer un mot de passe';
-                  }
-                  if (value.length < 6) {
-                    return 'Le mot de passe doit contenir au moins 6 caractères';
-                  }
-                  return null;
-                },
-              ),
+              PasswordField(controller: _passwordController),
               const SizedBox(height: 16),
-              // Champ de recherche de commune avec autocomplete
-              Consumer(
-                builder: (context, ref, child) {
-                  final communesAsync = ref.watch(communesProvider);
-
-                  return communesAsync.when(
-                    data: (communes) => Autocomplete<Commune>(
-                      displayStringForOption: (commune) => commune.toString(),
-                      optionsBuilder: (TextEditingValue textEditingValue) {
-                        if (textEditingValue.text.isEmpty) {
-                          return const Iterable<Commune>.empty();
-                        }
-                        return communes.where((commune) {
-                          final searchLower = textEditingValue.text.toLowerCase();
-                          return commune.nom.toLowerCase().contains(searchLower) ||
-                                 commune.codePostal.contains(textEditingValue.text);
-                        });
-                      },
-                      onSelected: (Commune commune) {
-                        setState(() {
-                          _selectedCommune = commune;
-                        });
-                      },
-                      fieldViewBuilder: (
-                        BuildContext context,
-                        TextEditingController fieldTextEditingController,
-                        FocusNode fieldFocusNode,
-                        VoidCallback onFieldSubmitted,
-                      ) {
-                        return TextFormField(
-                          controller: fieldTextEditingController,
-                          focusNode: fieldFocusNode,
-                          decoration: InputDecoration(
-                            labelText: 'Commune',
-                            border: const OutlineInputBorder(),
-                            prefixIcon: const Icon(Icons.location_city),
-                            helperText: 'Recherchez votre commune par nom ou code postal',
-                            suffixIcon: _selectedCommune != null
-                                ? IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () {
-                                      fieldTextEditingController.clear();
-                                      setState(() {
-                                        _selectedCommune = null;
-                                      });
-                                    },
-                                  )
-                                : null,
-                          ),
-                          validator: (value) {
-                            if (_selectedCommune == null) {
-                              return 'Veuillez sélectionner une commune';
-                            }
-                            return null;
-                          },
-                        );
-                      },
-                    ),
-                    loading: () => TextFormField(
-                      enabled: false,
-                      decoration: const InputDecoration(
-                        labelText: 'Commune',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.location_city),
-                        helperText: 'Chargement des communes...',
-                        suffixIcon: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        ),
-                      ),
-                    ),
-                    error: (error, stack) => TextFormField(
-                      enabled: false,
-                      decoration: InputDecoration(
-                        labelText: 'Commune',
-                        border: const OutlineInputBorder(),
-                        prefixIcon: const Icon(Icons.error, color: Colors.red),
-                        helperText: 'Erreur de chargement des communes',
-                        errorText: error.toString(),
-                      ),
-                    ),
-                  );
+              CommuneSearchField(
+                onCommuneSelected: (commune) {
+                  setState(() {
+                    _selectedCommune = commune;
+                  });
                 },
               ),
               const SizedBox(height: 24),
-              SizedBox(
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: authState.isLoading ? null : _performRegister,
-                  child: authState.isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('S\'inscrire'),
-                ),
+              AuthButton(
+                onPressed: _performRegister,
+                text: 'S\'inscrire',
+                isLoading: authState.isLoading,
               ),
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Déjà un compte ? Se connecter'),
+                child: const Text(
+                  'Déjà un compte ? Se connecter',
+                  style: TextStyle(fontSize: 16, color: Color(0xFF053F5C)),
+                ),
               ),
             ],
           ),
@@ -283,4 +155,3 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     super.dispose();
   }
 }
-

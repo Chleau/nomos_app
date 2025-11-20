@@ -1,9 +1,12 @@
 import 'dart:io';
 import '../entities/signalement.dart';
-import '../entities/photo_signalement.dart';
+import '../entities/type_signalement.dart';
 
 /// Repository abstrait pour la gestion des signalements
 abstract class SignalementRepository {
+  /// Récupère tous les types de signalements disponibles
+  Future<List<TypeSignalement>> getTypesSignalement();
+
   /// Récupère tous les signalements
   Future<List<Signalement>> getAllSignalements();
 
@@ -39,7 +42,7 @@ abstract class SignalementRepository {
   /// Supprime un signalement
   Future<void> deleteSignalement(int id);
 
-  /// Upload une photo et crée l'entrée dans photos_signalement
-  Future<PhotoSignalement> uploadPhotoAndCreate(File photo, int signalementId);
+  /// Upload une photo en base64 et retourne l'URL base64
+  Future<String> uploadPhotoBase64(File photo);
 }
 

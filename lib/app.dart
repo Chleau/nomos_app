@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'features/auth/presentation/widgets/auth_guard.dart';
+import 'core/presentation/splash_screen.dart';
+import 'features/auth/presentation/pages/login_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'package:nomos_app/shared/widgets/navbar.dart';
 import 'package:nomos_app/features/laws/presentation/pages/laws_page.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color(0xFFF25F0D),
             primary: const Color(0xFFF25F0D),
-            background: const Color(0xFFE6ECEF),
+            surface: const Color(0xFFE6ECEF),
           ),
           appBarTheme: const AppBarTheme(
             backgroundColor: Color(0xFFF25F0D),
@@ -34,9 +35,13 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: const AuthGuard(
-          child: MainPage(),
-        ),
+        // Définir le splash screen comme route initiale
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SplashScreen(),
+          '/login': (context) => const LoginPage(),
+          '/main': (context) => const MainPage(),
+        },
         debugShowCheckedModeBanner: false,
       ),
     );
