@@ -1,12 +1,12 @@
 import '../entities/law.dart';
 import '../repositories/law_repository.dart';
 
-class GetLaws {
+class GetAllLawsUseCase {
   final LawRepository repository;
 
-  GetLaws(this.repository);
+  GetAllLawsUseCase(this.repository);
 
   Future<List<Law>> call() async {
-    return await repository.getLaws();
+    return await repository.getAllLaws();
   }
 }

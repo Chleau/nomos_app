@@ -1,6 +1,8 @@
+// lib/features/laws/presentation/pages/laws_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nomos_app/features/laws/presentation/providers/laws_provider.dart';
+import '../providers/laws_provider.dart';
+import '../Widget/law_card.dart';
 
 class LawsPage extends ConsumerWidget {
   const LawsPage({super.key});
@@ -17,7 +19,6 @@ class LawsPage extends ConsumerWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Barre de recherche
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
@@ -53,10 +54,7 @@ class LawsPage extends ConsumerWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
-            // Liste des lois
             Expanded(
               child: lawsAsync.when(
                 data: (laws) {
@@ -70,94 +68,7 @@ class LawsPage extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemCount: laws.length,
                     separatorBuilder: (context, index) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final law = laws[index];
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Titre de la loi
-                              Text(
-                                law.titre,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF053F5C),
-                                  height: 1.4,
-                                ),
-                              ),
-
-                              const SizedBox(height: 12),
-
-                              // Badge thématique et lien "lire plus"
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // Badge
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Color(0xFF053F5C)),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text(
-                                      law.thematique,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF053F5C),
-                                      ),
-                                    ),
-                                  ),
-
-                                  // Lien "lire plus"
-                                  TextButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: Text(law.titre),
-                                          content: SingleChildScrollView(
-                                            child: Text(law.contenu),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(context),
-                                              child: const Text('Fermer'),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                    child: const Text(
-                                      'lire plus',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF053F5C),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                    itemBuilder: (context, index) => LawCard(law: laws[index]),
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),

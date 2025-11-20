@@ -2,7 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/law_model.dart';
 
 abstract class LawRemoteDataSource {
-  Future<List<LawModel>> getLaws();
+  Future<List<LawModel>> getAllLaws();
 }
 
 class LawRemoteDataSourceImpl implements LawRemoteDataSource {
@@ -11,7 +11,7 @@ class LawRemoteDataSourceImpl implements LawRemoteDataSource {
   LawRemoteDataSourceImpl(this.supabaseClient);
 
   @override
-  Future<List<LawModel>> getLaws() async {
+  Future<List<LawModel>> getAllLaws() async {
     try {
       final response = await supabaseClient
           .from('lois_reglementations')

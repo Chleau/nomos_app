@@ -1,5 +1,6 @@
 import 'package:nomos_app/features/laws/domain/entities/law.dart';
 
 abstract class LawRepository {
-  Future<List<Law>> getLaws();
+  Future<List<Law>> getAllLaws();
+  Future<Law?> getLawById(String id);
 }

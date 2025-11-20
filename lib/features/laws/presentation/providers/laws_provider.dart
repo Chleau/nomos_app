@@ -6,32 +6,58 @@ import 'package:nomos_app/features/laws/domain/repositories/law_repository.dart'
 import 'package:nomos_app/features/laws/domain/usecases/search_laws.dart';
 import 'package:nomos_app/features/laws/domain/usecases/get_laws.dart';
 import 'package:nomos_app/features/laws/data/datasources/law_remote_datasource.dart';
+import 'package:nomos_app/features/laws/domain/usecases/get_laws.dart';
 
-final lawDataSourceProvider = Provider<LawRemoteDataSource>((ref) {
-  return LawRemoteDataSourceImpl(Supabase.instance.client);
+// Provider Supabase
+final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+  return Supabase.instance.client;
 });
 
-final lawRepositoryProvider = Provider<LawRepository>((ref) {
-  return LawRepositoryImpl(
-    remoteDataSource: ref.watch(lawDataSourceProvider),
-  );
+// Provider DataSource
+final lawsRemoteDataSourceProvider = Provider<LawRemoteDataSource>((ref) {
+  final supabaseClient = ref.watch(supabaseClientProvider);
+  return LawRemoteDataSourceImpl(supabaseClient);
 });
 
-final getLawsUseCaseProvider = Provider((ref) {
-  return GetLaws(ref.watch(lawRepositoryProvider));
+// Provider Repository
+final lawsRepositoryProvider = Provider((ref) {
+  final remoteDataSource = ref.watch(lawsRemoteDataSourceProvider);
+  return LawRepositoryImpl(remoteDataSource);
 });
 
-final searchLawsUseCaseProvider = Provider((ref) {
-  return SearchLaws(ref.watch(lawRepositoryProvider));
+// Provider Use Case
+final getAllLawsUseCaseProvider = Provider((ref) {
+  final repository = ref.watch(lawsRepositoryProvider);
+  return GetAllLawsUseCase(repository);
 });
 
-final lawsProvider = FutureProvider<List<Law>>((ref) async {
-  return await ref.watch(getLawsUseCaseProvider).call();
-});
-
+// Provider pour la requête de recherche
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
-final filteredLawsProvider = FutureProvider<List<Law>>((ref) async {
-  final query = ref.watch(searchQueryProvider);
-  return await ref.watch(searchLawsUseCaseProvider).call(query);
+// Provider pour les lois (avec gestion d'état AsyncValue)
+final lawsProvider = FutureProvider<List<Law>>((ref) async {
+  final getAllLaws = ref.watch(getAllLawsUseCaseProvider);
+  return await getAllLaws();
+});
+
+// Provider pour les lois filtrées
+final filteredLawsProvider = Provider<AsyncValue<List<Law>>>((ref) {
+  final lawsAsync = ref.watch(lawsProvider);
+  final searchQuery = ref.watch(searchQueryProvider).toLowerCase();
+
+  return lawsAsync.when(
+    data: (laws) {
+      if (searchQuery.isEmpty) {
+        return AsyncValue.data(laws);
+      }
+      final filtered = laws.where((law) {
+        return law.titre.toLowerCase().contains(searchQuery) ||
+            law.thematique.toLowerCase().contains(searchQuery) ||
+            law.contenu.toLowerCase().contains(searchQuery);
+      }).toList();
+      return AsyncValue.data(filtered);
+    },
+    loading: () => const AsyncValue.loading(),
+    error: (error, stack) => AsyncValue.error(error, stack),
+  );
 });
