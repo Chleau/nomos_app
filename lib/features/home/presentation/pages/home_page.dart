@@ -9,7 +9,12 @@ import '../widgets/home_app_bar.dart';
 
 /// Page d'accueil après authentification
 class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+  final Function(int)? onNavigate;
+
+  const HomePage({
+    super.key,
+    this.onNavigate,
+  });
 
   @override
   ConsumerState<HomePage> createState() => _HomePageState();
@@ -75,7 +80,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     const SizedBox(height: 24),
 
                     // Section des boutons de navigation
-                    const NavigationButtonsSection(),
+                    NavigationButtonsSection(onNavigate: widget.onNavigate),
                   ],
                 ),
               ),

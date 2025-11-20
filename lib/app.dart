@@ -4,8 +4,9 @@ import 'core/presentation/splash_screen.dart';
 import 'core/presentation/pages/onboarding_screen.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
-import 'package:nomos_app/shared/widgets/navbar.dart';
-import 'package:nomos_app/features/laws/presentation/pages/laws_page.dart';
+import 'features/home/presentation/pages/profile_page.dart';
+import 'features/laws/presentation/pages/laws_page.dart';
+import 'shared/widgets/Navbar.dart';
 import 'package:nomos_app/features/incidents/presentation/pages/carte_incidents_page.dart';
 
 
@@ -62,27 +63,31 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const CarteIncidentsPage(),
-    const LawsPage(),
-    const Center(child: Text('Menu', style: TextStyle(fontSize: 24))),
-  ];
+  void _onNavigate(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Créer les pages dynamiquement pour passer le callback
+    final List<Widget> pages = [
+      HomePage(onNavigate: _onNavigate),
+      const CarteIncidentsPage(),
+      const LawsPage(),
+      const ProfilePage(),
+
+    ];
+
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: _pages,
+        children: pages,
       ),
       bottomNavigationBar: Navbar(
         currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        onTap: _onNavigate,
       ),
     );
   }

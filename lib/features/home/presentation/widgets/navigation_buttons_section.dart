@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import '../pages/interactive_map_page.dart';
+import 'package:nomos_app/features/incidents/presentation/pages/carte_incidents_page.dart';
 import '../../../laws/presentation/pages/laws_page.dart';
 import '../../../incidents/presentation/pages/signalements_list_page.dart';
 import 'navigation_button.dart';
 
 /// Section des boutons de navigation de la HomePage
 class NavigationButtonsSection extends StatelessWidget {
-  const NavigationButtonsSection({super.key});
+  final Function(int)? onNavigate;
+
+  const NavigationButtonsSection({
+    super.key,
+    this.onNavigate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +25,18 @@ class NavigationButtonsSection extends StatelessWidget {
                 icon: Icons.map,
                 label: 'Carte interactive',
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const InteractiveMapPage(),
-                    ),
-                  );
+                  // Si callback fourni, l'utiliser (navigation via bottom bar)
+                  // Sinon, utiliser Navigator.push (fallback)
+                  if (onNavigate != null) {
+                    onNavigate!(1); // Index 1 = Carte
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CarteIncidentsPage(),
+                      ),
+                    );
+                  }
                 },
               ),
             ),
@@ -35,12 +46,18 @@ class NavigationButtonsSection extends StatelessWidget {
                 icon: Icons.gavel,
                 label: 'Lois en vigueur',
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LawsPage(),
-                    ),
-                  );
+                  // Si callback fourni, l'utiliser (navigation via bottom bar)
+                  // Sinon, utiliser Navigator.push (fallback)
+                  if (onNavigate != null) {
+                    onNavigate!(2); // Index 2 = Lois
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LawsPage(),
+                      ),
+                    );
+                  }
                 },
               ),
             ),
@@ -56,6 +73,7 @@ class NavigationButtonsSection extends StatelessWidget {
             label: 'Signalements sur ma commune',
             backgroundColor: const Color(0xFF053F5C),
             onPressed: () {
+              // Navigation vers la page de signalements
               Navigator.push(
                 context,
                 MaterialPageRoute(
