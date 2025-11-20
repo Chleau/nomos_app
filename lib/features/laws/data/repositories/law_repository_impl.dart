@@ -1,21 +1,14 @@
-import 'package:nomos_app/features/laws/domain/repositories/law_repository.dart';
-import 'package:nomos_app/features/laws/data/models/law_model.dart';
 import 'package:nomos_app/features/laws/domain/entities/law.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:nomos_app/features/laws/domain/repositories/law_repository.dart';
+import 'package:nomos_app/features/laws/data/datasources/law_remote_datasource.dart';
 
 class LawRepositoryImpl implements LawRepository {
-  final SupabaseClient supabase;
+  final LawRemoteDataSource remoteDataSource;
 
-  LawRepositoryImpl(this.supabase);
+  LawRepositoryImpl({required this.remoteDataSource});
 
-  Future<List<Law>> getRecentLaws() async {
-    final response = await supabase
-        .from('lois_reglementations')
-        .select()
-        .order('date_mise_a_jour', ascending: false);
-
-    return (response as List)
-        .map((json) => LawModel.fromJson(json))
-        .toList();
+  @override
+  Future<List<Law>> getLaws() async {
+    return await remoteDataSource.getLaws();
   }
 }

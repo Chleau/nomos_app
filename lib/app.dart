@@ -4,9 +4,8 @@ import 'core/presentation/splash_screen.dart';
 import 'core/presentation/pages/onboarding_screen.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
-import 'features/laws/presentation/pages/laws_page.dart';
-import 'shared/widgets/Navbar.dart';
-
+import 'package:nomos_app/shared/widgets/navbar.dart';
+import 'package:nomos_app/features/laws/presentation/pages/laws_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

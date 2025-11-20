@@ -170,7 +170,7 @@ class LawsPage extends ConsumerWidget {
                       Text('Erreur: $error'),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () => ref.refresh(recentLawsProvider),
+                        onPressed: () => ref.refresh(filteredLawsProvider),
                         child: const Text('Réessayer'),
                       ),
                     ],

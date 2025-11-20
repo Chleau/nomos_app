@@ -7,12 +7,12 @@ class SearchLaws {
   SearchLaws(this.repository);
 
   Future<List<Law>> call(String query) async {
-    final laws = await repository.getRecentLaws();
-
-    if (query.isEmpty) return laws;
-
-    return laws.where((law) {
-      return law.titre.toLowerCase().contains(query.toLowerCase());
+    final all = await repository.getLaws();
+    final q = query.toLowerCase();
+    return all.where((law) {
+      final titre = law.titre.toLowerCase();
+      final contenu = law.contenu.toLowerCase();
+      return titre.contains(q) || contenu.contains(q);
     }).toList();
   }
 }
